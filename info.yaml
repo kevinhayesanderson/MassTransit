@@ -1,0 +1,25 @@
+RabbitMQ Concepts:
+  Exchanges:
+    It is an abstraction that receives messages from the producer and delivers messages to the Queues in the broker.
+    Message routing agents.
+    Is is responsible for routing messages to different Queues with the help of header attributes, Bindings and Routing Keys.
+    Exchange Types:
+      Direct:
+        Uses the routing key
+        The message goes to the queue where the Binding key matches the Routing Key
+      Topic:
+        Uses patterns to match the routing key to the binding key of the queue
+        if the routing key matches the pattern of a queue, it is enqueued
+      Fanout:
+        routing key is ignored
+        exchange broadcasts the message to all the queues
+      Headers:
+        routing key is ignored
+        the queue is matched with the header properties of the message 
+  Bindings:
+    It is a link where queue is binding to the exchange
+  Routing Keys:
+    A message attribute, which exchange looks to route the message to a queue
+    Depending on the exchange type a routing key can be ignored
+
+MassTransit:
