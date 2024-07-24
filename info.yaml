@@ -23,3 +23,7 @@ RabbitMQ Concepts:
     Depending on the exchange type a routing key can be ignored
 
 MassTransit:
+    3 ways of sending Message:
+      1. IRequestClient - Request/Response pattern
+      2. IPublishEndpoint - Pub/Sub pattern - to Exchange or Topic, for events and messages
+      3. ISendEndpointProvider - to specific endpoints, for messages and commands
