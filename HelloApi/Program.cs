@@ -1,3 +1,4 @@
+using HelloApi.Consumers;
 using HelloApi.Contracts;
 using MassTransit;
 
@@ -11,6 +12,16 @@ builder.Services.AddOptions<RabbitMqTransportOptions>().BindConfiguration("Rabbi
 
 builder.Services.AddMassTransit(x =>
 {
+    //consumers - adding by generic way
+    //var entryAssembly = Assembly.GetEntryAssembly();
+    //x.AddConsumers(entryAssembly);
+
+    x.SetKebabCaseEndpointNameFormatter();
+
+    //consumers - adding indivdual
+    x.AddConsumer<MessageConsumer>();
+
+    //Transport
     x.UsingRabbitMq((context, cfg) =>
     {
         //cfg.Host("localhost", "/", h =>
@@ -18,6 +29,8 @@ builder.Services.AddMassTransit(x =>
         //    h.Username(builder.ser);
         //    h.Password("quest");
         //});
+
+        cfg.ConfigureEndpoints(context);
     });
 });
 
@@ -56,11 +69,26 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/hello", async (IPublishEndpoint publishEndpoint, ISendEndpointProvider sendEndpointProvider) =>
 {
-    var messageToSend = new Message("Hello from api");
-    await publishEndpoint.Publish(messageToSend);
+    var messageToSend = new Message() { Text = "Hello from api" };
+    //await publishEndpoint.Publish(messageToSend);
 
-    var sendEndPoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:my-queue"));
-    await sendEndPoint.Send(messageToSend);
+    await publishEndpoint.Publish<Message>(messageToSend, publishContext =>
+    {
+        publishContext.Headers.Set("Publish-Context", "en-us");
+    });
+
+    var sendEndpoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:my-queue"));
+    //await sendEndpoint.Send(messageToSend);
+
+    await sendEndpoint.Send<Message>(new
+    {
+        messageToSend.Text
+    },
+    sendContext =>
+    {
+        sendContext.Headers.Set("Culture", "en-us");
+    }
+    );
 
     return Results.Ok();
 })

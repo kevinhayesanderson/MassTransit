@@ -1,4 +1,9 @@
 ﻿namespace HelloApi.Contracts
 {
-    public record Message(string Text);
+    //[EntityName("message-submitted")]
+    //[ExcludeFromTopology]
+    public class Message
+    {
+        public string Text { get; set; }
+    }
 }
