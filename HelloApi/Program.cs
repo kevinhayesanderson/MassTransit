@@ -18,8 +18,9 @@ builder.Services.AddMassTransit(x =>
 
     x.SetKebabCaseEndpointNameFormatter();
 
-    //consumers - adding indivdual
-    x.AddConsumer<MessageConsumer>();
+    //consumers - adding individual
+    x.AddConsumer<MessageConsumer, MessageConsumerDefinition>()
+    .Endpoint(e => { e.Name = "salutations"; });
 
     //Transport
     x.UsingRabbitMq((context, cfg) =>
@@ -29,6 +30,12 @@ builder.Services.AddMassTransit(x =>
         //    h.Username(builder.ser);
         //    h.Password("quest");
         //});
+
+        cfg.ReceiveEndpoint("manually-configured", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(3)));
+            e.ConfigureConsumer<MessageConsumer>(context);
+        });
 
         cfg.ConfigureEndpoints(context);
     });
