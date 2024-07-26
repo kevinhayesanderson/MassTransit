@@ -27,3 +27,7 @@ MassTransit:
       1. IRequestClient - Request/Response pattern
       2. IPublishEndpoint - Pub/Sub pattern - to Exchange or Topic, for events and messages
       3. ISendEndpointProvider - to specific endpoints, for messages and commands
+Topologies:
+  Automatic:
+  Custom:
+    

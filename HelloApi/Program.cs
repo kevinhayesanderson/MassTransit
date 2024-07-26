@@ -16,11 +16,12 @@ builder.Services.AddMassTransit(x =>
     //var entryAssembly = Assembly.GetEntryAssembly();
     //x.AddConsumers(entryAssembly);
 
-    x.SetKebabCaseEndpointNameFormatter();
+    //x.SetKebabCaseEndpointNameFormatter();
 
     //consumers - adding individual
-    x.AddConsumer<MessageConsumer, MessageConsumerDefinition>()
-    .Endpoint(e => { e.Name = "salutations"; });
+    x.AddConsumer<MessageConsumer>();
+    //x.AddConsumer<MessageConsumer, MessageConsumerDefinition>()
+    //.Endpoint(e => { e.Name = "salutations"; });
 
     //Transport
     x.UsingRabbitMq((context, cfg) =>
@@ -31,11 +32,30 @@ builder.Services.AddMassTransit(x =>
         //    h.Password("quest");
         //});
 
-        cfg.ReceiveEndpoint("manually-configured", e =>
+        //cfg.ReceiveEndpoint("manually-configured", e =>
+        //{
+        //    e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(3)));
+        //    e.ConfigureConsumer<MessageConsumer>(context);
+        //});
+
+        //cfg.Message<Message>(x => x.SetEntityName("my-message"));
+
+        cfg.ReceiveEndpoint("my-direct-queue", e =>
         {
-            e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(3)));
+            e.ConfigureConsumeTopology = false;
+            e.Bind("my-direct-exchange", x =>
+            {
+                x.ExchangeType = "direct";
+                x.RoutingKey = "my-direct-routing-key";
+            });
+            //e.Bind<Message>();
             e.ConfigureConsumer<MessageConsumer>(context);
         });
+
+        //cfg.Publish<Message>(x =>
+        //{
+        //    x.ExchangeType = "direct";
+        //});
 
         cfg.ConfigureEndpoints(context);
     });
@@ -82,6 +102,7 @@ app.MapGet("/hello", async (IPublishEndpoint publishEndpoint, ISendEndpointProvi
     await publishEndpoint.Publish<Message>(messageToSend, publishContext =>
     {
         publishContext.Headers.Set("Publish-Context", "en-us");
+        publishContext.SetRoutingKey("my-direct-routing-key");
     });
 
     var sendEndpoint = await sendEndpointProvider.GetSendEndpoint(new Uri("queue:my-queue"));
