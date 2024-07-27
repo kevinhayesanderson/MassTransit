@@ -64,6 +64,8 @@ builder.Services.AddMassTransit(x =>
 
         cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
 
+        cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context);
+
         cfg.ConfigureEndpoints(context);
     });
 });
