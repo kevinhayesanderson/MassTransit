@@ -1,7 +1,7 @@
-﻿using HelloApi.Contracts;
+﻿using HelloAPI.Contracts;
 using MassTransit;
 
-namespace HelloApi.Consumers
+namespace HelloAPI.Consumers
 {
     public class MessageConsumer(ILogger<MessageConsumer> Logger) : IConsumer<Message>
     {
@@ -14,4 +14,3 @@ namespace HelloApi.Consumers
         }
     }
 }
-

@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace HelloApi.Filters
+namespace HelloAPI.Filters
 {
     public class TenantSendFilter<T>(Tenant tenant) : IFilter<SendContext<T>> where T : class
     {

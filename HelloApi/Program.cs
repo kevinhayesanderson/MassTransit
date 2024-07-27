@@ -1,6 +1,6 @@
-using HelloApi.Consumers;
-using HelloApi.Contracts;
-using HelloApi.Filters;
+using HelloAPI.Consumers;
+using HelloAPI.Contracts;
+using HelloAPI.Filters;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);

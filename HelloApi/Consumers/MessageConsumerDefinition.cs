@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace HelloApi.Consumers
+namespace HelloAPI.Consumers
 {
     public class MessageConsumerDefinition : ConsumerDefinition<MessageConsumer>
     {
@@ -8,6 +8,7 @@ namespace HelloApi.Consumers
         {
             Endpoint(x => x.Name = "message.consumer");
         }
+
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
                                                   IConsumerConfigurator<MessageConsumer> consumerConfigurator,
                                                   IRegistrationContext context)

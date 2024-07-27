@@ -1,7 +1,7 @@
-﻿namespace HelloApi.Filters
+﻿namespace HelloAPI.Filters
 {
     public class Tenant
     {
-        public string MyValue { get; set; }
+        public string? MyValue { get; set; } = string.Empty;
     }
 }
