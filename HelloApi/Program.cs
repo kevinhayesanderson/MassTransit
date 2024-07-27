@@ -1,5 +1,6 @@
 using HelloApi.Consumers;
 using HelloApi.Contracts;
+using HelloApi.Filters;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddOptions<RabbitMqTransportOptions>().BindConfiguration("RabbitMq");
+
+builder.Services.AddScoped<Tenant>();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -40,22 +43,26 @@ builder.Services.AddMassTransit(x =>
 
         //cfg.Message<Message>(x => x.SetEntityName("my-message"));
 
-        cfg.ReceiveEndpoint("my-direct-queue", e =>
-        {
-            e.ConfigureConsumeTopology = false;
-            e.Bind("my-direct-exchange", x =>
-            {
-                x.ExchangeType = "direct";
-                x.RoutingKey = "my-direct-routing-key";
-            });
-            //e.Bind<Message>();
-            e.ConfigureConsumer<MessageConsumer>(context);
-        });
+        //cfg.ReceiveEndpoint("my-direct-queue", e =>
+        //{
+        //    e.ConfigureConsumeTopology = false;
+        //    e.Bind("my-direct-exchange", x =>
+        //    {
+        //        x.ExchangeType = "direct";
+        //        x.RoutingKey = "my-direct-routing-key";
+        //    });
+        //    //e.Bind<Message>();
+        //    e.ConfigureConsumer<MessageConsumer>(context);
+        //});
 
         //cfg.Publish<Message>(x =>
         //{
         //    x.ExchangeType = "direct";
         //});
+
+        cfg.UseSendFilter(typeof(TenantSendFilter<>), context);
+
+        cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
 
         cfg.ConfigureEndpoints(context);
     });
@@ -94,10 +101,12 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.MapGet("/hello", async (IPublishEndpoint publishEndpoint, ISendEndpointProvider sendEndpointProvider) =>
+app.MapGet("/hello", async (IPublishEndpoint publishEndpoint, ISendEndpointProvider sendEndpointProvider, Tenant tenant) =>
 {
     var messageToSend = new Message() { Text = "Hello from api" };
     //await publishEndpoint.Publish(messageToSend);
+
+    tenant.MyValue = "MyCoolTenant";
 
     await publishEndpoint.Publish<Message>(messageToSend, publishContext =>
     {
