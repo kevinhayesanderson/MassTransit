@@ -5,8 +5,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloAPI", "HelloAPI.csproj", "{8893C727-B28C-4678-8272-0621FCCCE303}"
 EndProject
 Global
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {658F8BF3-D08F-40FB-9F82-B563E6BADF1C}
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8893C727-B28C-4678-8272-0621FCCCE303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -14,11 +15,10 @@ Global
 		{8893C727-B28C-4678-8272-0621FCCCE303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8893C727-B28C-4678-8272-0621FCCCE303}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {658F8BF3-D08F-40FB-9F82-B563E6BADF1C}
 	EndGlobalSection
 EndGlobal

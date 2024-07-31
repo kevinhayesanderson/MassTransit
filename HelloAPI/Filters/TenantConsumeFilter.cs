@@ -24,7 +24,6 @@ namespace HelloAPI.Filters
                 logger.LogInformation("TenantFromPublish : {TenantValueFromSend}", tenantValueFromSend);
             }
 
-
             return next.Send(context);
         }
     }

@@ -60,11 +60,18 @@ builder.Services.AddMassTransit(x =>
         //    x.ExchangeType = "direct";
         //});
 
+        //below filter are generic <> filter, invoked for all types of messages
         cfg.UseSendFilter(typeof(TenantSendFilter<>), context);
 
         cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context);
 
         cfg.UseConsumeFilter(typeof(TenantConsumeFilter<>), context);
+
+        //this filter is a non generic filter, specific for message type - Email
+        cfg.UsePublishFilter<TenantPublishMessageFilter>(context);
+        //or
+        //cfg.UsePublishFilter(typeof(TenantPublishFilter<>), context,
+        //    x => x.Include(typeof(Email)));
 
         cfg.ConfigureEndpoints(context);
     });
@@ -105,8 +112,11 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/hello", async (IPublishEndpoint publishEndpoint, ISendEndpointProvider sendEndpointProvider, Tenant tenant) =>
 {
-    var messageToSend = new Message() { Text = "Hello from api" };
-    //await publishEndpoint.Publish(messageToSend);
+    var messageToSend = new Message() { Text = "Hello from an api" };
+
+    await publishEndpoint.Publish(messageToSend);
+
+    await publishEndpoint.Publish(new Email() { Destination = "", Subject = "Hello from an email" });
 
     tenant.MyValue = "MyCoolTenant";
 
